@@ -35,8 +35,6 @@ RichText.prototype.toRichString = function (x) {
 
 var blue = '6699CC', orange = 'FFA500', red = 'EE0000', green = '008B45';
 
-var MIN_SEEDS = 50
-
 function coloredStr(str, color) {
     return '<font color="' + color + '">' + str + '</font>';
 }
@@ -54,6 +52,10 @@ settings.globalSettings(plugin.id, plugin.title, logo, plugin.synopsis);
 
 settings.createString('baseURL', "Nyaa base URL without '/' at the end", 'http://www.nyaa.si', function (v) {
     service.baseUrl = v;
+});
+
+settings.createString('minSeed', "Min seeds allowed", 50, function (v) {
+    service.minSeed = v;
 });
 
 function setPageHeader(page, title) {
@@ -126,5 +128,5 @@ function isAnimeWithEnglishSubs(item) {
 }
 
 function hasEnoughSeeders(item) {
-    return item.seeders >= MIN_SEEDS
+    return item.seeders >= service.minSeed
 }
