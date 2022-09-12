@@ -54,7 +54,7 @@ settings.createString('baseURL', "Nyaa base URL without '/' at the end", 'http:/
     service.baseUrl = v;
 });
 
-settings.createString('minSeed', "Min seeds allowed", 50, function (v) {
+settings.createString('minSeed', "Min seeds allowed", "50", function (v) {
     service.minSeed = v;
 });
 
