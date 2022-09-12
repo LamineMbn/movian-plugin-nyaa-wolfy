@@ -4,7 +4,7 @@
   "homepage": "https://github.com/LamineMbn/movian-plugin-eztv-wolfy",
   "title": "Anime Sekai",
   "synopsis": "Nyaa - Stream Anime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "file": "nyaa.js",
   "showtimeVersion": "5.0.0",
   "type": "ecmascript",
