@@ -55,7 +55,7 @@ settings.createString('baseURL', "Nyaa base URL without '/' at the end", 'http:/
 });
 
 settings.createString('minSeed', "Min seeds allowed", "50", function (v) {
-    service.minSeed = v;
+    service.minSeed = parseInt(v);
 });
 
 function setPageHeader(page, title) {
