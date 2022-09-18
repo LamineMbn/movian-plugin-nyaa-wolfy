@@ -54,8 +54,12 @@ settings.createString('baseURL', "Nyaa base URL without '/' at the end", 'http:/
     service.baseUrl = v;
 });
 
-settings.createString('minSeed', "Min seeds allowed", "50", function (v) {
-    service.minSeed = parseInt(v);
+settings.createInt('minSeed', "Min seeds allowed", 50, 5, 100, 2,"seeds" , function (v) {
+    service.minSeed = v;
+});
+
+settings.createMultiOpt('category', "Anime Category", [["1_2", "Anime - English Translated"], ["1_3", "Anime - Non English Translated"], ["1_4", "Anime - Raw"]] , function (v) {
+    service.category = v;
 });
 
 function setPageHeader(page, title) {
@@ -73,6 +77,7 @@ new page.Route(plugin.id + ":start", function (page) {
     page.appendItem(plugin.id + ":search:", 'search', {
         title: 'Search at ' + service.baseUrl
     });
+    searchOnNyaa(page, "");
     page.loading = false;
 });
 
@@ -92,23 +97,27 @@ function searchOnNyaa(page, query) {
 
     page.loading = true;
     query.offset = offset;
-    var doc = XML.parse(http.request(service.baseUrl, {
+    var response = http.request(service.baseUrl, {
             args: {
                 page: "rss",
-                term: query
+                c: service.category,
+                q: query
             }
         }
-    ).toString());
+    ).toString()
+    var doc = XML.parse(response);
     ++offset;
 
     var allItems = doc.rss.channel.filterNodes('item');
     if (0 === allItems.length) {
+        page.appendItem("", "separator", {
+            title: new RichText(coloredStr('No results', 'FFA500', "+2"))
+        });
         page.loading = false;
-        return false;
     }
     for (var i in allItems) {
         var item = allItems[i];
-        if (isAnimeWithEnglishSubs(item) && hasEnoughSeeders(item)) {
+        if (hasEnoughSeeders(item)) {
             page.appendItem("torrent:browse:" + item.link, 'video', {
                 title: item.title,
                 description: new RichText(item.description),
@@ -120,11 +129,6 @@ function searchOnNyaa(page, query) {
         }
     }
     page.loading = false;
-    return true;
-}
-
-function isAnimeWithEnglishSubs(item) {
-    return item.categoryId === "1_2"
 }
 
 function hasEnoughSeeders(item) {
